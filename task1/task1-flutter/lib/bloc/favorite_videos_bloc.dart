@@ -27,7 +27,7 @@ class FavoriteVideosBloc
       final response = await callApi().get('/favorite/list');
 
       List<PopularVideo> favoriteVideos =
-          favoriteVideosFromJson(response.data['data']['favorites']);
+          popularVideosFromJson(response.data['data']['favorites']);
       yield FavoriteVideosLoaded(favoriteVideos);
     } catch (e) {
       print(e);
