@@ -27,44 +27,54 @@ class PopularVideosChartBloc
       final response = await callApi().get('/youtube/populars/chart');
       print('hahahaha');
       print(response.data);
-      List<VideoStatistic> viewsData = response.data['data']['populars']
-          .map((video) => VideoStatistic(video['title'], video['view'].toInt()))
-          .toList();
-      List<VideoStatistic> likesData = response.data['data']['populars']
-          .map((video) => VideoStatistic(video['title'], video['like'].toInt()))
-          .toList();
+      List<VideoStatistic> viewsData = List<VideoStatistic>.from(
+        response.data['data']['populars'].map((video) =>
+            VideoStatistic(video['title'], int.parse(video['view']))),
+      );
 
-      List<VideoStatistic> unlikesData = response.data['data']['populars']
-          .map((video) =>
-              VideoStatistic(video['title'], video['unlike'].toInt()))
-          .toList();
-      List<VideoStatistic> commentsData = response.data['data']['populars'].map(
-          (video) => VideoStatistic(video['title'], video['comment'].toInt()));
+      List<VideoStatistic> likesData = List<VideoStatistic>.from(
+        response.data['data']['populars'].map((video) =>
+            VideoStatistic(video['title'], int.parse(video['like']))),
+      );
+
+      List<VideoStatistic> unlikesData = List<VideoStatistic>.from(
+        response.data['data']['populars'].map((video) =>
+            VideoStatistic(video['title'], int.parse(video['dislike']))),
+      );
+
+      List<VideoStatistic> commentsData = List<VideoStatistic>.from(
+        response.data['data']['populars'].map((video) =>
+            VideoStatistic(video['title'], int.parse(video['comment']))),
+      );
 
       final _chartData = [
         new charts.Series<VideoStatistic, String>(
           id: 'View',
-          domainFn: (VideoStatistic statistic, _) => statistic.title,
+          domainFn: (VideoStatistic statistic, _) =>
+              statistic.title.substring(0, 10),
           measureFn: (VideoStatistic statistic, _) => statistic.count,
           data: viewsData,
         ),
         new charts.Series<VideoStatistic, String>(
           id: 'Like',
-          domainFn: (VideoStatistic statistic, _) => statistic.title,
+          domainFn: (VideoStatistic statistic, _) =>
+              statistic.title.substring(0, 10),
           measureFn: (VideoStatistic statistic, _) => statistic.count,
           data: likesData,
         ),
         new charts.Series<VideoStatistic, String>(
           id: 'Dislike',
-          domainFn: (VideoStatistic statistic, _) => statistic.title,
+          domainFn: (VideoStatistic statistic, _) =>
+              statistic.title.substring(0, 10),
           measureFn: (VideoStatistic statistic, _) => statistic.count,
           data: unlikesData,
         ),
         new charts.Series<VideoStatistic, String>(
           id: 'Comment',
-          domainFn: (VideoStatistic statistic, _) => statistic.title,
+          domainFn: (VideoStatistic statistic, _) =>
+              statistic.title.substring(0, 10),
           measureFn: (VideoStatistic statistic, _) => statistic.count,
-          data: unlikesData,
+          data: commentsData,
         ),
       ];
 

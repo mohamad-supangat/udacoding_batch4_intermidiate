@@ -45,65 +45,63 @@ class _ChartPopularVideosState extends State<ChartPopularVideos> {
         SizedBox(
           height: 30,
         ),
-        Expanded(
-          child: BlocProvider<PopularVideosChartBloc>(
-            create: (context) =>
-                popularVideosChartBloc..add(GetPopularVideosChart()),
-            child: BlocBuilder<PopularVideosChartBloc, PopularVideosChartState>(
-                builder: (context, state) {
-              if (state is PopularVideosChartLoaded) {
-                if (state.chartData.length == 0) {
-                  return NoItems(
-                    message: 'Tidak ada data tersedia',
-                    color: Colors.white,
-                  );
-                }
-
-                return Expanded(
-                  child: charts.BarChart(
-                    state.chartData,
-                    animate: true,
-                    barGroupingType: charts.BarGroupingType.grouped,
-                    domainAxis: new charts.OrdinalAxisSpec(
-                      renderSpec: charts.SmallTickRendererSpec(
-                        labelRotation: 45,
-                      ),
-                    ),
-                  ),
-                );
-              } else if (state is PopularVideosChartInitial) {
-                return Expanded(
-                  child: Shimmer.fromColors(
-                    baseColor: Colors.grey[300],
-                    highlightColor: Colors.white,
-                    child: ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) => Card(
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: 150,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              } else {
+        BlocProvider<PopularVideosChartBloc>(
+          create: (context) =>
+              popularVideosChartBloc..add(GetPopularVideosChart()),
+          child: BlocBuilder<PopularVideosChartBloc, PopularVideosChartState>(
+              builder: (context, state) {
+            if (state is PopularVideosChartLoaded) {
+              if (state.chartData.length == 0) {
                 return NoItems(
-                  message: 'Gagal mengambil data',
+                  message: 'Tidak ada data tersedia',
                   color: Colors.white,
                 );
               }
-            }),
-          ),
+
+              return Expanded(
+                child: charts.BarChart(
+                  state.chartData,
+                  animate: true,
+                  barGroupingType: charts.BarGroupingType.grouped,
+                  domainAxis: new charts.OrdinalAxisSpec(
+                    renderSpec: charts.SmallTickRendererSpec(
+                      labelRotation: 90,
+                    ),
+                  ),
+                ),
+              );
+            } else if (state is PopularVideosChartInitial) {
+              return Expanded(
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
+                  highlightColor: Colors.white,
+                  child: ListView.builder(
+                    itemCount: 5,
+                    itemBuilder: (context, index) => Card(
+                      clipBehavior: Clip.antiAlias,
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 150,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return NoItems(
+                message: 'Gagal mengambil data',
+                color: Colors.white,
+              );
+            }
+          }),
         ),
       ],
     );
