@@ -9,7 +9,7 @@ class YoutubeController extends Controller
 {
     public function getPopularsList()
     {
-        $populars = \Youtube::getPopularVideos('id');
+        $populars = \Youtube::getVideoInfo(config('youtube.lists'));
         $populars = array_map(function ($popular) {
             return [
                 'id'                => $popular->id,
@@ -36,7 +36,8 @@ class YoutubeController extends Controller
      */
     public function getPopularsChart()
     {
-        $populars = \Youtube::getPopularVideos('id');
+        $populars =
+            \Youtube::getVideoInfo(config('youtube.lists'));;
         $populars = array_map(function ($popular) {
             return [
                 'title'             => $popular->snippet->title,

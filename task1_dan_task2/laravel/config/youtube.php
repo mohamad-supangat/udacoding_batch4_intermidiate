@@ -10,5 +10,6 @@
 */
 
 return [
-    'key' => env('YOUTUBE_API_KEY', 'AIzaSyBDSiZlCQbzCYxS9VLyZHxO_VOa5hi7YXk')
+    'key' => env('YOUTUBE_API_KEY', 'AIzaSyBDSiZlCQbzCYxS9VLyZHxO_VOa5hi7YXk'),
+    'lists' => ['5mbSL-L-Rr4', 'bNNI_bayXu4', '2XCtgJ7wjcga', 'qzhXHFhWgiE', 'moCRSD4WIXQa', 'qdcw3qpyWRo', 'L4kHLCLHFvw', 'qSWqONpUR-o']
 ];
