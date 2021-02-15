@@ -25,8 +25,7 @@ class PopularVideosChartBloc
   Stream<PopularVideosChartState> getPopularVideosChart() async* {
     try {
       final response = await callApi().get('/youtube/populars/chart');
-      print('hahahaha');
-      print(response.data);
+
       List<VideoStatistic> viewsData = List<VideoStatistic>.from(
         response.data['data']['populars'].map((video) =>
             VideoStatistic(video['title'], int.parse(video['view']))),
@@ -42,41 +41,37 @@ class PopularVideosChartBloc
             VideoStatistic(video['title'], int.parse(video['dislike']))),
       );
 
-      List<VideoStatistic> commentsData = List<VideoStatistic>.from(
-        response.data['data']['populars'].map((video) =>
-            VideoStatistic(video['title'], int.parse(video['comment']))),
-      );
-
-      final _chartData = [
-        new charts.Series<VideoStatistic, String>(
-          id: 'View',
-          domainFn: (VideoStatistic statistic, _) =>
-              statistic.title.substring(0, 10),
-          measureFn: (VideoStatistic statistic, _) => statistic.count,
-          data: viewsData,
-        ),
-        new charts.Series<VideoStatistic, String>(
-          id: 'Like',
-          domainFn: (VideoStatistic statistic, _) =>
-              statistic.title.substring(0, 10),
-          measureFn: (VideoStatistic statistic, _) => statistic.count,
-          data: likesData,
-        ),
-        new charts.Series<VideoStatistic, String>(
-          id: 'Dislike',
-          domainFn: (VideoStatistic statistic, _) =>
-              statistic.title.substring(0, 10),
-          measureFn: (VideoStatistic statistic, _) => statistic.count,
-          data: unlikesData,
-        ),
-        new charts.Series<VideoStatistic, String>(
-          id: 'Comment',
-          domainFn: (VideoStatistic statistic, _) =>
-              statistic.title.substring(0, 10),
-          measureFn: (VideoStatistic statistic, _) => statistic.count,
-          data: commentsData,
-        ),
-      ];
+      final _chartData = {
+        'view': [
+          new charts.Series<VideoStatistic, String>(
+            id: 'View',
+            domainFn: (VideoStatistic statistic, _) =>
+                statistic.title.substring(0, 10),
+            measureFn: (VideoStatistic statistic, _) => statistic.count,
+            data: viewsData,
+          ),
+        ],
+        'like': [
+          new charts.Series<VideoStatistic, String>(
+            id: 'View',
+            domainFn: (VideoStatistic statistic, _) =>
+                statistic.title.substring(0, 10),
+            measureFn: (VideoStatistic statistic, _) => statistic.count,
+            data: likesData,
+            fillColorFn: (_, __) => charts.MaterialPalette.green.shadeDefault,
+          ),
+        ],
+        'dislike': [
+          new charts.Series<VideoStatistic, String>(
+            id: 'View',
+            domainFn: (VideoStatistic statistic, _) =>
+                statistic.title.substring(0, 10),
+            measureFn: (VideoStatistic statistic, _) => statistic.count,
+            data: unlikesData,
+            fillColorFn: (_, __) => charts.MaterialPalette.red.shadeDefault,
+          ),
+        ]
+      };
 
       yield PopularVideosChartLoaded(_chartData);
     } catch (e) {
@@ -97,7 +92,7 @@ abstract class PopularVideosChartState extends Equatable {
 class PopularVideosChartInitial extends PopularVideosChartState {}
 
 class PopularVideosChartLoaded extends PopularVideosChartState {
-  final List<charts.Series<VideoStatistic, String>> chartData;
+  final Map<String, List<charts.Series<VideoStatistic, String>>> chartData;
 
   PopularVideosChartLoaded(this.chartData);
 

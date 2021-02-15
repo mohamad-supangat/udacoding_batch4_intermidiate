@@ -59,15 +59,111 @@ class _ChartPopularVideosState extends State<ChartPopularVideos> {
               }
 
               return Expanded(
-                child: charts.BarChart(
-                  state.chartData,
-                  animate: true,
-                  barGroupingType: charts.BarGroupingType.grouped,
-                  domainAxis: new charts.OrdinalAxisSpec(
-                    renderSpec: charts.SmallTickRendererSpec(
-                      labelRotation: 90,
+                child: ListView(
+                  children: [
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 10,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Data Viewer',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            Divider(),
+                            Container(
+                              height: 500,
+                              padding: EdgeInsets.all(10),
+                              child: charts.BarChart(
+                                state.chartData['view'],
+                                animate: true,
+                                barGroupingType: charts.BarGroupingType.grouped,
+                                domainAxis: new charts.OrdinalAxisSpec(
+                                  renderSpec: charts.SmallTickRendererSpec(
+                                    labelRotation: 80,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 10,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Data Like',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            Divider(),
+                            Container(
+                              height: 500,
+                              padding: EdgeInsets.all(10),
+                              child: charts.BarChart(
+                                state.chartData['like'],
+                                animate: true,
+                                barGroupingType: charts.BarGroupingType.grouped,
+                                domainAxis: new charts.OrdinalAxisSpec(
+                                  renderSpec: charts.SmallTickRendererSpec(
+                                    labelRotation: 80,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 10,
+                      child: Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Data Dislike',
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            Divider(),
+                            Container(
+                              height: 500,
+                              padding: EdgeInsets.all(10),
+                              child: charts.BarChart(
+                                state.chartData['dislike'],
+                                animate: true,
+                                barGroupingType: charts.BarGroupingType.grouped,
+                                domainAxis: new charts.OrdinalAxisSpec(
+                                  renderSpec: charts.SmallTickRendererSpec(
+                                    labelRotation: 80,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               );
             } else if (state is PopularVideosChartInitial) {
