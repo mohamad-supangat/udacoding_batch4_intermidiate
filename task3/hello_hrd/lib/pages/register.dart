@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../helpers/toast.dart';
+import '../helpers/helpers.dart';
 import '../layouts/main.dart';
-import '../components/icon-logo.dart';
+import '../components/components.dart';
+import '../database.dart';
+import '../models/user.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -10,6 +12,8 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  DBProvider _db = new DBProvider();
+
   bool _obsecurePassword = true;
   bool _obsecurePasswordConfirmation = true;
   bool _agree = false;
@@ -18,6 +22,8 @@ class _RegisterState extends State<Register> {
   // form && text editing coFailed to open inode FILE_Bitmap: No such file or directoryntroller
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _confirmationPasswordController =
@@ -42,24 +48,30 @@ class _RegisterState extends State<Register> {
       );
     } else {
       setState(() => _isLoading = true);
-      try {
-        // await callApi().post('/user/register', data: {
-        //   'name': _nameController.text,
-        //   'email': _emailController.text,
-        //   'password': _passwordController.text,
-        //   'confirmation_password': _confirmationPasswordController.text,
-        // }).then((response) {
-        //   showToast(
-        //     type: response.data['status'] ? 'success' : 'error',
-        //     message: response.data['message'],
-        //   );
-        //   if (response.data['status']) {
-        //     Navigator.pushNamed(context, '/login');
-        //   }
-        // });
-      } finally {
-        setState(() => _isLoading = false);
+      // try {
+      final User response = await _db.addUser(User(
+        username: _usernameController.text,
+        name: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+        photo: 'asdasd',
+      ));
+
+      if (response != null) {
+        showToast(
+          type: 'success',
+          message: 'Sukses melakukan pendaftaran',
+        );
+        Navigator.pushNamed(context, '/login');
+      } else {
+        showToast(
+          type: 'error',
+          message: 'Gagal melakukan pendaftaran',
+        );
       }
+      // } finally {
+      //   setState(() => _isLoading = false);
+      // }
     }
   }
 
@@ -90,8 +102,14 @@ class _RegisterState extends State<Register> {
                               _validatior(arg: arg, name: 'Nama Lengkap'),
                           decoration: InputDecoration(
                             labelText: 'Nama Lengkap *',
-                            filled: true,
-                            fillColor: Colors.white,
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _usernameController,
+                          validator: (String arg) =>
+                              _validatior(arg: arg, name: 'Username'),
+                          decoration: InputDecoration(
+                            labelText: 'Username *',
                           ),
                         ),
                         SizedBox(
@@ -103,9 +121,7 @@ class _RegisterState extends State<Register> {
                               _validatior(arg: arg, name: 'Email'),
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'E-mail',
-                            filled: true,
-                            fillColor: Colors.white,
+                            labelText: 'E-mail *',
                           ),
                         ),
                         SizedBox(height: 10),
@@ -128,8 +144,6 @@ class _RegisterState extends State<Register> {
                                     !this._obsecurePassword);
                               },
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
                           ),
                         ),
                         SizedBox(height: 10),
@@ -158,8 +172,6 @@ class _RegisterState extends State<Register> {
                                         !this._obsecurePasswordConfirmation);
                               },
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
                           ),
                         ),
                         SizedBox(height: 10),
