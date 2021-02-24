@@ -33,7 +33,7 @@ class _RegisterState extends State<Register> {
   _validatior({arg, name}) {
     if (arg == '')
       return '$name tidak boleh kosong';
-    else if (arg.length < 3)
+    else if (arg.length < 5)
       return '$name harus lebih dari 5 karakter';
     else
       return null;
@@ -54,10 +54,9 @@ class _RegisterState extends State<Register> {
         name: _nameController.text,
         email: _emailController.text,
         password: _passwordController.text,
-        photo: 'asdasd',
       ));
 
-      if (response != null) {
+      if (response.id != null) {
         showToast(
           type: 'success',
           message: 'Sukses melakukan pendaftaran',
@@ -106,8 +105,25 @@ class _RegisterState extends State<Register> {
                         ),
                         TextFormField(
                           controller: _usernameController,
-                          validator: (String arg) =>
-                              _validatior(arg: arg, name: 'Username'),
+                          validator: (String arg) {
+                            final generalResult =
+                                _validatior(arg: arg, name: 'Username');
+                            if (generalResult != null) {
+                              return generalResult;
+                            } else {
+                              RegExp usernameRegExp = RegExp(
+                                r"^[^\W_]+$",
+                                caseSensitive: false,
+                                multiLine: false,
+                              );
+
+                              if (usernameRegExp.hasMatch(arg) == false) {
+                                return 'Username yang anda masukan tidak valid';
+                              } else {
+                                return null;
+                              }
+                            }
+                          },
                           decoration: InputDecoration(
                             labelText: 'Username *',
                           ),
@@ -117,8 +133,25 @@ class _RegisterState extends State<Register> {
                         ),
                         TextFormField(
                           controller: _emailController,
-                          validator: (String arg) =>
-                              _validatior(arg: arg, name: 'Email'),
+                          validator: (String arg) {
+                            final generalResult =
+                                _validatior(arg: arg, name: 'E-mail');
+                            if (generalResult != null) {
+                              return generalResult;
+                            } else {
+                              RegExp emailRegExp = RegExp(
+                                r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$",
+                                caseSensitive: false,
+                                multiLine: false,
+                              );
+
+                              if (emailRegExp.hasMatch(arg) == false) {
+                                return 'Email yang anda masukan tidak valid';
+                              } else {
+                                return null;
+                              }
+                            }
+                          },
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: 'E-mail *',

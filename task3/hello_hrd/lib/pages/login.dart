@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 import '../components/components.dart';
 import '../helpers/helpers.dart';
+import '../database.dart';
+import '../models/user.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,11 +13,13 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final DBProvider _db = DBProvider();
+
   bool _obsecurePassword = true;
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
-  TextEditingController _emailController = TextEditingController();
+  TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
   @override
@@ -61,11 +67,11 @@ class _LoginState extends State<Login> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             TextFormField(
-                              controller: _emailController,
+                              controller: _usernameController,
                               decoration: InputDecoration(
                                 filled: true,
-                                hintText: 'email',
-                                prefixIcon: Icon(Icons.email_rounded),
+                                hintText: 'Username',
+                                prefixIcon: Icon(Icons.account_circle),
                                 contentPadding:
                                     EdgeInsets.only(left: 20, right: 20),
                                 border: OutlineInputBorder(
@@ -75,9 +81,9 @@ class _LoginState extends State<Login> {
                               ),
                               validator: (String arg) {
                                 if (arg == '')
-                                  return 'email tidak boleh kosong';
+                                  return 'username tidak boleh kosong';
                                 else if (arg.length < 3)
-                                  return 'email harus lebih dari 5 karakter';
+                                  return 'username harus lebih dari 5 karakter';
                                 else
                                   return null;
                               },
@@ -136,7 +142,7 @@ class _LoginState extends State<Login> {
                                 // cek validasi form
                                 if (_formKey.currentState.validate()) {
                                   // cek user login proses
-                                  // _prosesLogin();
+                                  _prosesLogin();
                                 } else {
                                   showToast(
                                     type: 'error',
@@ -220,10 +226,10 @@ class _LoginState extends State<Login> {
 
   // pengecekan form input
   String _checkValidationText() {
-    if (_emailController.text == '')
-      return 'email tidak boleh kosong';
-    else if (_emailController.text.length < 5)
-      return 'email tidak boleh kurang dari 5 karakter';
+    if (_usernameController.text == '')
+      return 'username tidak boleh kosong';
+    else if (_usernameController.text.length < 5)
+      return 'username tidak boleh kurang dari 5 karakter';
     else if (_passwordController.text == '')
       return 'Password tidak boleh kosong';
     else if (_passwordController.text.length < 5)
@@ -234,8 +240,8 @@ class _LoginState extends State<Login> {
   }
 
   void _cekSession() async {
-    String token = await Auth().token();
-    if (token != null) {
+    User _user = await Auth().userAuth();
+    if (_user != null) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         '/home',
         (Route<dynamic> route) => false,
@@ -244,43 +250,33 @@ class _LoginState extends State<Login> {
   }
 
   // // proses pengecekan login
-  // void _prosesLogin() async {
-  //   setState(() => _isLoading = true);
-  //   try {
-  //     await callApi().post(
-  //       '/user/login',
-  //       data: {
-  //         'email': _emailController.text,
-  //         'password': _passwordController.text,
-  //         'remember': true,
-  //       },
-  //     ).then((response) async {
-  //       if (!response.data['status']) {
-  //         showToast(type: 'error', message: response.data['message']);
-  //       } else {
-  //         // masukan token dan tmp user di dalam shared_preferences
-  //         SharedPreferences localStorage =
-  //             await SharedPreferences.getInstance();
+  Future<void> _prosesLogin() async {
+    setState(() => _isLoading = true);
+    try {
+      User _user = await _db.getUserLogin(
+        username: _usernameController.text,
+        password: _passwordController.text,
+      );
 
-  //         localStorage.setString(
-  //           'token',
-  //           response.data['token'].toString(),
-  //         );
+      if (_user == null) {
+        showToast(
+            type: 'error',
+            message: "Username / Password yang anda masukan salah");
+      } else {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString(
+          'auth',
+          jsonEncode(_user).toString(),
+        );
 
-  //         localStorage.setString(
-  //           'user',
-  //           jsonEncode(response.data['user']).toString(),
-  //         );
-
-  //         // pindahkan page ke HomePage
-  //         Navigator.of(context).pushNamedAndRemoveUntil(
-  //           '/home',
-  //           (Route<dynamic> route) => false,
-  //         );
-  //       }
-  //     });
-  //   } finally {
-  //     setState(() => _isLoading = false);
-  //   }
-  // }
+        // pindahkan page ke HomePage
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home',
+          (Route<dynamic> route) => false,
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
+    }
+  }
 }

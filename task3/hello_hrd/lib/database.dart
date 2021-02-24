@@ -32,10 +32,57 @@ class DBProvider {
         '''CREATE TABLE "employees" ("id" integer not null primary key autoincrement, "name" varchar not null, "email" varchar not null, "phone_number" varchar not null, "gender" varchar check ("gender" in ('male', 'female', 'other')) not null, "photo" text, "address" text not null, "positon" varchar not null)''');
   }
 
-  // add new user to database
+  // add user
   Future<User> addUser(User user) async {
     final db = await this.database;
     user.id = await db.insert('users', user.toJson());
     return user;
+  }
+
+  // update user
+  Future<User> updateUser(User user, int id) async {
+    final db = await this.database;
+    user.id = await db.update(
+      'users',
+      user.toJson(),
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    return user;
+  }
+
+  // get user login
+  Future<User> getUserLogin({
+    username,
+    password,
+  }) async {
+    final db = await this.database;
+    List users = await db.query(
+      'users',
+      where: 'username = ? AND password = ?',
+      whereArgs: [username, password],
+    );
+
+    if (users.length > 0) {
+      return User.fromJson(users.first);
+    }
+
+    return null;
+  }
+
+  // get user detail
+  Future<User> getUser(id) async {
+    final db = await this.database;
+    List users = await db.query(
+      'users',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    if (users.length > 0) {
+      return User.fromJson(users.first);
+    }
+    return null;
   }
 }

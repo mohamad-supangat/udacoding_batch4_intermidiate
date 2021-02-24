@@ -10,7 +10,7 @@ void showToast({
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.BOTTOM,
     timeInSecForIosWeb: 1,
-    backgroundColor: type == 'error' ? Colors.teal : Colors.green,
+    backgroundColor: type == 'error' ? Colors.red : Colors.teal,
     textColor: Colors.white,
   );
 }
