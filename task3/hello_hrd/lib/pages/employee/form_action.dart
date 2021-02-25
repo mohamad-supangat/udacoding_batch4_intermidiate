@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 
 import '../../bus.dart';
 import '../../models/employee.dart';
@@ -26,9 +25,8 @@ class _EmployeeFormActionState extends State<EmployeeFormAction> {
   TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   TextEditingController _positionController = TextEditingController();
-  String _gender = 'male';
-
   bool _isLoading = false;
+
   // fungsi untuk membuat pesan validasi
   _validatior({arg, name}) {
     if (arg == '')
@@ -40,10 +38,23 @@ class _EmployeeFormActionState extends State<EmployeeFormAction> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.employee != null) {
+      _nameController.text = widget.employee.name;
+      _emailController.text = widget.employee.email;
+      _phoneNumberController.text = widget.employee.phoneNumber;
+      _addressController.text = widget.employee.address;
+      _positionController.text = widget.employee.position;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tambah pegawai'),
+        title: Text(
+            (widget.employee != null ? 'Ubah' : 'Tambah') + ' Data Pegawai'),
         elevation: 0,
       ),
       body: MainLayout(
@@ -72,38 +83,6 @@ class _EmployeeFormActionState extends State<EmployeeFormAction> {
                         ),
                       ),
                       SizedBox(height: 10),
-                      DropDownFormField(
-                        titleText: 'Jenis kelamin *',
-                        value: _gender,
-                        onSaved: (value) {
-                          setState(() {
-                            _gender = value;
-                          });
-                        },
-                        onChanged: (value) {
-                          setState(() {
-                            _gender = value;
-                          });
-                        },
-                        dataSource: [
-                          {
-                            "display": "Laki - laki",
-                            "value": "male",
-                          },
-                          {
-                            "display": "Perempuan",
-                            "value": "female",
-                          },
-                          {
-                            "display": "Lain - lain",
-                            "value": "other",
-                          },
-                        ],
-                        textField: 'display',
-                        valueField: 'value',
-                        filled: false,
-                        required: true,
-                      ),
                       TextFormField(
                         controller: _emailController,
                         validator: (String arg) {
@@ -214,16 +193,24 @@ class _EmployeeFormActionState extends State<EmployeeFormAction> {
     if (_formKey.currentState.validate() && !_isLoading) {
       setState(() => _isLoading = true);
       try {
-        final Employee _employee = await _db.addEmployee(Employee(
+        final Employee _employeeData = Employee(
           name: _nameController.text,
           email: _emailController.text,
           phoneNumber: _phoneNumberController.text,
-          gender: _gender,
           address: _addressController.text,
           position: _positionController.text,
-        ));
+          gender: 'other',
+        );
+        Employee _employeeResult;
 
-        if (_employee.id != null) {
+        if (widget.employee == null) {
+          _employeeResult = await _db.addEmployee(_employeeData);
+        } else {
+          _employeeResult =
+              await _db.updateEmployee(_employeeData, widget.employee.id);
+        }
+
+        if (_employeeResult.id != null) {
           eventBus.fire(RefreshListEmployeesBus());
           showToast(type: 'success', message: 'Sukses menyimpan data pegawai');
           Navigator.of(context).pop();

@@ -78,6 +78,7 @@ class _UpdateUserState extends State<UpdateUser> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ubah Profile'),
+        elevation: 0,
       ),
       body: MainLayout(
         child: BlocProvider<UserBloc>(

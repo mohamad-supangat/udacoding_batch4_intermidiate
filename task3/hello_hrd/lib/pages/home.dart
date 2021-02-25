@@ -37,8 +37,7 @@ class _HomeState extends State<Home> {
         tooltip: 'Tambah data Pegawai',
         child: Icon(Icons.add),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: MainLayout(
         child: Container(
           child: BlocProvider<ListEmployeesBloc>(
@@ -94,12 +93,14 @@ class _HomeState extends State<Home> {
                             ),
                             child: InkWell(
                               onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) => DetailVideo(video),
-                                //   ),
-                                // );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => EmployeeFormAction(
+                                      employee: employee,
+                                    ),
+                                  ),
+                                );
                               },
                               child: Container(
                                 padding: EdgeInsets.symmetric(
