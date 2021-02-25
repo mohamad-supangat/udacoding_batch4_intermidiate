@@ -48,29 +48,29 @@ class _RegisterState extends State<Register> {
       );
     } else {
       setState(() => _isLoading = true);
-      // try {
-      final User response = await _db.addUser(User(
-        username: _usernameController.text,
-        name: _nameController.text,
-        email: _emailController.text,
-        password: _passwordController.text,
-      ));
+      try {
+        final User response = await _db.addUser(User(
+          username: _usernameController.text,
+          name: _nameController.text,
+          email: _emailController.text,
+          password: _passwordController.text,
+        ));
 
-      if (response.id != null) {
-        showToast(
-          type: 'success',
-          message: 'Sukses melakukan pendaftaran',
-        );
-        Navigator.pushNamed(context, '/login');
-      } else {
-        showToast(
-          type: 'error',
-          message: 'Gagal melakukan pendaftaran',
-        );
+        if (response.id != null) {
+          showToast(
+            type: 'success',
+            message: 'Sukses melakukan pendaftaran',
+          );
+          Navigator.pushNamed(context, '/login');
+        } else {
+          showToast(
+            type: 'error',
+            message: 'Gagal melakukan pendaftaran',
+          );
+        }
+      } finally {
+        setState(() => _isLoading = false);
       }
-      // } finally {
-      //   setState(() => _isLoading = false);
-      // }
     }
   }
 

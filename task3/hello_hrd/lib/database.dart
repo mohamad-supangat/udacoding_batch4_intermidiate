@@ -2,6 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import './models/user.dart';
+import './models/employee.dart';
 
 class DBProvider {
   DBProvider._();
@@ -29,7 +30,7 @@ class DBProvider {
 
     // employees table
     await db.execute(
-        '''CREATE TABLE "employees" ("id" integer not null primary key autoincrement, "name" varchar not null, "email" varchar not null, "phone_number" varchar not null, "gender" varchar check ("gender" in ('male', 'female', 'other')) not null, "photo" text, "address" text not null, "positon" varchar not null)''');
+        '''CREATE TABLE "employees" ("id" integer not null primary key autoincrement, "name" varchar not null, "email" varchar not null, "phone_number" varchar not null, "gender" varchar check ("gender" in ('male', 'female', 'other')) not null, "photo" text, "address" text not null, "position" varchar not null)''');
   }
 
   // add user
@@ -84,5 +85,37 @@ class DBProvider {
       return User.fromJson(users.first);
     }
     return null;
+  }
+
+  // start of employee section
+  // add employee
+  Future<Employee> addEmployee(Employee employee) async {
+    final db = await this.database;
+    employee.id = await db.insert('employees', employee.toJson());
+    return employee;
+  }
+
+  // update employee
+  Future<Employee> updateEmployee(Employee employee, int id) async {
+    final db = await this.database;
+    employee.id = await db.update(
+      'employees',
+      employee.toJson(),
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+
+    return employee;
+  }
+
+  // get all employees
+  Future<List<Employee>> getEmployees() async {
+    final db = await this.database;
+    List employees = await db.query(
+      'employees',
+      orderBy: 'name',
+    );
+
+    return employeesFromJson(employees);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:custom_clippers/custom_clippers.dart';
 
 class MainLayout extends StatelessWidget {
   final Widget child;
@@ -23,24 +24,32 @@ class MainLayout extends StatelessWidget {
   Widget _mainWidget(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          height: MediaQuery.of(context).size.height * 0.6,
-          decoration: BoxDecoration(
-            color: Colors.teal,
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(30),
-              bottomRight: Radius.circular(30),
+        ClipPath(
+          clipper: SinCosineWaveClipper(),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            padding: EdgeInsets.all(20),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.teal,
+                  Colors.teal,
+                  Colors.teal[300],
+                  Colors.teal[800],
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
         ),
         SafeArea(
           child: Container(
             width: double.maxFinite,
-            padding: EdgeInsets.only(
-              left: 20,
-              right: 20,
-              top: 50,
-              bottom: 30,
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.03,
+              horizontal: MediaQuery.of(context).size.width * 0.03,
             ),
             child: child,
           ),

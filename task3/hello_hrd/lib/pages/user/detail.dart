@@ -21,6 +21,7 @@ class _UserDetailState extends State<UserDetail> {
       create: (context) => _userBloc..add(GetUser()),
       child: Scaffold(
         appBar: AppBar(
+          elevation: 0,
           title: Text('Profile User'),
           actions: [
             IconButton(
