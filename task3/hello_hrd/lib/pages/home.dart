@@ -176,6 +176,12 @@ class _HomeState extends State<Home> {
                   ),
                 );
               }
+              if (state is ListEmployeesNoItems) {
+                return NoItems(
+                  color: Colors.white,
+                  message: 'Tidak ditemukan data pegawai',
+                );
+              }
               return NoItems(
                 color: Colors.white,
                 message: 'Terjadi error pengambilan data',

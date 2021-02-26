@@ -28,7 +28,11 @@ Stream<ListEmployeesState> getEmployees() async* {
   final DBProvider _db = DBProvider();
   try {
     final List<Employee> _employees = await _db.getEmployees();
-    yield ListEmployeesLoaded(_employees);
+    if (_employees.length == 0) {
+      yield ListEmployeesNoItems();
+    } else {
+      yield ListEmployeesLoaded(_employees);
+    }
   } catch (_) {
     yield ListEmployeesError();
   }
@@ -54,6 +58,8 @@ class ListEmployeesLoaded extends ListEmployeesState {
 }
 
 class ListEmployeesError extends ListEmployeesState {}
+
+class ListEmployeesNoItems extends ListEmployeesState {}
 
 // event of flutter bloc
 abstract class ListEmployeesEvent extends Equatable {
