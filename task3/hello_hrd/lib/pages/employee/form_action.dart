@@ -213,7 +213,7 @@ class _EmployeeFormActionState extends State<EmployeeFormAction> {
         if (_employeeResult.id != null) {
           eventBus.fire(RefreshListEmployeesBus());
           showToast(type: 'success', message: 'Sukses menyimpan data pegawai');
-          Navigator.of(context).pop();
+          Navigator.of(context).pushNamed('/home');
         } else {
           showToast(type: 'error', message: 'Gagal menyimpan data pegawai');
         }

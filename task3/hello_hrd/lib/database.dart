@@ -108,6 +108,16 @@ class DBProvider {
     return employee;
   }
 
+  // delete employee
+  Future<int> deleteEmployee(int id) async {
+    final db = await this.database;
+    return await db.delete(
+      'employees',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   // get all employees
   Future<List<Employee>> getEmployees() async {
     final db = await this.database;
